@@ -8,7 +8,7 @@
 *.user
 *.userosscache
 *.sln.docstates
-application/__pycache__/*
+*/__pycache__/*
 application/*.db
 application/*.db-journal
 
