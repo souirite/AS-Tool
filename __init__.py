@@ -1,18 +1,16 @@
 from flask import Flask, render_template, request
+from config import config
 from werkzeug.utils import secure_filename
 import os
 
 app = Flask(__name__)
-app.config["UPLOADED_FILES_DEST"] = "C:/Users/adil.souirite/Desktop/Workspace/AS Tool/Tool/uploads"
-app.config["ALLOWED_FILE_EXTENSIONS"] = ["TXT"]
-
+app.config.from_object(config)
 
 def allowed_filename(filename):
     if not "." in filename:
         return False
     # Split the extension from the filename
-    ext = filename.rsplit(".", 1)[1]
-    print(ext)
+    ext = filename.rsplit(".", 1)[1]    
    # Check if the extension is in ALLOWED_FILE_EXTENSIONS
     if ext.upper() in app.config["ALLOWED_FILE_EXTENSIONS"]:
         return True
@@ -31,10 +29,14 @@ def eplan():
             file = request.files['file']
             filename = secure_filename(file.filename)
             if allowed_filename(filename):
-                file.save(os.path.join(
-                    app.config["UPLOADED_FILES_DEST"], file.filename))
-                print("file uploaded ")
-                return render_template('eplan.html')
+                g = []
+                file.save(os.path.join(app.config["UPLOADED_FILES_DEST"], file.filename))
+                f = open(os.path.join(app.config["UPLOADED_FILES_DEST"], file.filename),'r')
+                for line in f.readlines():
+                    l = line.strip().split('\t')     
+                    g.append(l)
+                
+                return render_template('eplan.html', file =g)
             return render_template('index.html')
             print("wrong extension")
 
